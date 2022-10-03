@@ -18,12 +18,48 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 
+import { VStack } from "@chakra-ui/layout";
+import { useToast } from "@chakra-ui/toast";
+
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+
+  const toast = useToast();
+
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [confirmpassword, setConfirmpassword] = useState();
+  const [password, setPassword] = useState();
+  const [pic, setPic] = useState();
   const [showPassword, setShowPassword] = useState(false);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
+  const submitHandler = async () =>{
+     
+     if (!name || !email || !password || !confirmpassword) {
+       toast({
+         title: "Please Fill all the Feilds",
+         status: "warning",
+         duration: 5000,
+         isClosable: true,
+         position: "bottom",
+       });
+     
+       return;
+     }
+     if (password !== confirmpassword) {
+       toast({
+         title: "Passwords Do Not Match",
+         status: "warning",
+         duration: 5000,
+         isClosable: true,
+         position: "bottom",
+       });
+       return;
+     }
+  }
   return (
     <div>
       <Flex
@@ -48,20 +84,29 @@ const Signup = () => {
               <Box>
                 <FormControl id="username" isRequired>
                   <FormLabel>User Name</FormLabel>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </FormControl>
               </Box>
 
               <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" />
+                <Input
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </FormControl>
               <HStack>
                 <Box pr={10}>
                   <FormControl id="password" isRequired>
                     <FormLabel>Password</FormLabel>
                     <InputGroup>
-                      <Input type={showPassword ? "text" : "password"} />
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
                       <InputRightElement h={"full"}>
                         <Button
                           variant={"ghost"}
@@ -80,7 +125,10 @@ const Signup = () => {
                   <FormControl id="cpassword" isRequired>
                     <FormLabel>Confirm Password</FormLabel>
                     <InputGroup>
-                      <Input type={showPassword ? "text" : "password"} />
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        onChange={(e) => setConfirmpassword(e.target.value)}
+                      />
                       <InputRightElement h={"full"}>
                         <Button
                           variant={"ghost"}
@@ -142,13 +190,17 @@ const Signup = () => {
                   _hover={{
                     bg: "blue.500",
                   }}
+                  onClick={submitHandler}
                 >
                   Sign up
                 </Button>
               </Stack>
               <Stack pt={6}>
                 <Text align={"center"}>
-                  Already a user? <Link onClick={() => navigate("/login")} color={"blue.400"}>Login</Link>
+                  Already a user?{" "}
+                  <Link onClick={() => navigate("/login")} color={"blue.400"}>
+                    Login
+                  </Link>
                 </Text>
               </Stack>
             </Stack>
