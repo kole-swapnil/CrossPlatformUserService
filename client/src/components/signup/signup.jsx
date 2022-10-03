@@ -62,12 +62,7 @@ const Signup = () => {
   }
   return (
     <div>
-      <Flex
-        minH={"100vh"}
-        align={"center"}
-        justify={"center"}
-        bg={useColorModeValue("gray.50", "gray.800")}
-      >
+      <VStack spacing="10px">
         <Stack spacing={8} mx={"auto"} maxW={"729px"} py={12} px={6}>
           <Stack align={"center"}>
             <Heading fontSize={"4xl"} textAlign={"center"}>
@@ -195,18 +190,18 @@ const Signup = () => {
                   Sign up
                 </Button>
               </Stack>
-              <Stack pt={6}>
+              {/* <Stack pt={6}>
                 <Text align={"center"}>
                   Already a user?{" "}
                   <Link onClick={() => navigate("/login")} color={"blue.400"}>
                     Login
                   </Link>
                 </Text>
-              </Stack>
+              </Stack> */}
             </Stack>
           </Box>
         </Stack>
-      </Flex>
+      </VStack>
     </div>
   );
 };
