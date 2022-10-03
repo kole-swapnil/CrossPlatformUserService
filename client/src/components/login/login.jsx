@@ -12,10 +12,38 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/layout";
+import {  InputGroup, InputRightElement } from "@chakra-ui/input";
+import { useToast } from "@chakra-ui/toast";
+import { useState } from "react";
 
-import React from "react";
 
 const Login = () => {
+  
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+  const toast = useToast();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const submitHandler = async () =>{
+    setLoading(true);
+    if (!email || !password) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+  }
+
+  
+
   return (
     <Flex
       minH={"100vh"}
@@ -26,7 +54,6 @@ const Login = () => {
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Heading fontSize={"4xl"}>Sign in to your account</Heading>
-         
         </Stack>
         <Box
           rounded={"lg"}
@@ -37,27 +64,36 @@ const Login = () => {
           <Stack spacing={4}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input
+                value={email}
+                type="email"
+                placeholder="Enter Your Email Address"
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
-            <FormControl id="password">
+            <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <InputGroup size="md">
+                <Input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={show ? "text" : "password"}
+                  placeholder="Enter password"
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? "Hide" : "Show"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
             <Stack spacing={10}>
-              <Stack
-                direction={{ base: "column", sm: "row" }}
-                align={"start"}
-                justify={"space-between"}
-              >
-                <Checkbox>Remember me</Checkbox>
-                <Link color={"blue.400"}>Forgot password?</Link>
-              </Stack>
               <Button
-                bg={"blue.400"}
-                color={"white"}
-                _hover={{
-                  bg: "blue.500",
-                }}
+                colorScheme="blue"
+                width="100%"
+                style={{ marginTop: 15 }}
+                onClick={submitHandler}
+                isLoading={loading}
               >
                 Sign in
               </Button>
