@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
+const HttpError = require("./models/http-error")
+
 require("dotenv").config();
 
 const app = express();
@@ -17,6 +19,11 @@ mongoose.connect(
     console.log("Database connected");
   }
 );
+
+app.use((req,res,next) =>{
+  const error = new HttpError("Could not find this route",404);
+  throw error;
+})
 
 app.use((error,req,res,next)=>{
   if(res.headerSent){
