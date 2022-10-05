@@ -1,5 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+const HttpError = require("./middlewares/http-error")
 
 require("dotenv").config();
 
@@ -16,6 +19,19 @@ mongoose.connect(
     console.log("Database connected");
   }
 );
+
+app.use((req,res,next) =>{
+  const error = new HttpError("Could not find this route",404);
+  throw error;
+})
+
+app.use((error,req,res,next)=>{
+  if(res.headerSent){
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({message: error.message || "An unknown error occured"});
+})
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
