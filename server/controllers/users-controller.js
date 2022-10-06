@@ -51,4 +51,31 @@ const signup = asyncHandler(async(req,res) => {
     }
 });
 
-module.exports = {signup};
+//API for login
+const login = asyncHandler(async (req,res) =>{
+  const {email,password} = req.body;
+
+  const user = await User.findOne({email});
+
+  if(user && (await user.matchPassword(password))){
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      walletAddress: user.walletAddress,
+      aadharNo: user.aadharNo,
+      isWeb3: user.isWeb3,
+      img: user.img,
+      coverImg: user.coverImg,
+      bio: user.bio,
+      socials: user.socials,
+      token: generateToken(user._id),
+    });
+  }else{
+    res.status(401);
+    throw new Error("Invalid Email or Password");
+  }
+})
+
+
+module.exports = {signup,login};
