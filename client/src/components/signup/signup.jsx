@@ -34,6 +34,7 @@ const Signup = () => {
   const [confirmpassword, setConfirmpassword] = useState();
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
+  const [cImg,setCoverImg] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const [picLoading, setPicLoading] = useState(false);
   
@@ -77,8 +78,8 @@ const Signup = () => {
         walletAddress,
         aadharNo,
         isWeb3,
-        img,
-        coverImg,
+        pic,
+        cImg,
         bio,
         socials
 
@@ -177,7 +178,7 @@ const postCoverImg = (pics) =>{
     })
       .then((res) => res.json())
       .then((data) => {
-        setPic(data.url.toString());
+        setCoverImg(data.url.toString());
         console.log(data.url.toString());
         // setPicLoading(false);
       })
@@ -337,14 +338,6 @@ const postCoverImg = (pics) =>{
                   Sign up
                 </Button>
               </Stack>
-              {/* <Stack pt={6}>
-                <Text align={"center"}>
-                  Already a user?{" "}
-                  <Link onClick={() => navigate("/login")} color={"blue.400"}>
-                    Login
-                  </Link>
-                </Text>
-              </Stack> */}
             </Stack>
           </Box>
         </Stack>
