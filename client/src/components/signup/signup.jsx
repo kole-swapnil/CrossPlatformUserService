@@ -34,8 +34,10 @@ const Signup = () => {
   const [confirmpassword, setConfirmpassword] = useState();
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
+  const [cImg,setCoverImg] = useState();
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const [picLoading, setPicLoading] = useState(false);
+  
 
   const submitHandler = async () =>{
      
@@ -76,8 +78,8 @@ const Signup = () => {
         walletAddress,
         aadharNo,
         isWeb3,
-        img,
-        coverImg,
+        pic,
+        cImg,
         bio,
         socials
 
@@ -103,6 +105,97 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
+  }
+}
+
+const postImgDetails = (pics) =>{
+   if (pics === undefined) {
+     toast({
+       title: "Please Select an Image!",
+       status: "warning",
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+     return;
+   }
+   console.log(pics);
+
+   if (pics.type === "image/jpeg" || pics.type === "image/png"){
+     const data = new FormData();
+     data.append("file", pics);
+     data.append("upload_preset", "CrossPlatformUserService");
+     data.append("cloud_name", "crossuser");
+     fetch("https://api.cloudinary.com/v1_1/crossuser/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data.url.toString());
+          // setPicLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          // setPicLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      // setPicLoading(false);
+      return;
+    }
+   
+}
+
+const postCoverImg = (pics) =>{
+  if (pics === undefined) {
+    toast({
+      title: "Please Select an Image!",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    return;
+  }
+  console.log(pics);
+
+  if (pics.type === "image/jpeg" || pics.type === "image/png") {
+    const data = new FormData();
+    data.append("file", pics);
+    data.append("upload_preset", "CoverImg");
+    data.append("cloud_name", "crossuser");
+    fetch("https://api.cloudinary.com/v1_1/crossuser/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCoverImg(data.url.toString());
+        console.log(data.url.toString());
+        // setPicLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        // setPicLoading(false);
+      });
+  } else {
+    toast({
+      title: "Please Select an Image!",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    // setPicLoading(false);
+    return;
   }
 }
   return (
@@ -203,13 +296,23 @@ const Signup = () => {
                 <Box>
                   <FormControl id="img" isRequired>
                     <FormLabel>Image</FormLabel>
-                    <Input type="file" />
+                    <Input
+                      type="file"
+                      p={1.5}
+                      accept="image/*"
+                      onChange={(e) => postImgDetails(e.target.files[0])}
+                    />
                   </FormControl>
                 </Box>
                 <Box>
                   <FormControl id="coverImg" isRequired>
                     <FormLabel>Cover Image</FormLabel>
-                    <Input type="file" />
+                    <Input
+                      type="file"
+                      p={1.5}
+                      accept="image/*"
+                      onChange={(e) => postCoverImg(e.target.files[0])}
+                    />
                   </FormControl>
                 </Box>
               </HStack>
@@ -235,14 +338,6 @@ const Signup = () => {
                   Sign up
                 </Button>
               </Stack>
-              {/* <Stack pt={6}>
-                <Text align={"center"}>
-                  Already a user?{" "}
-                  <Link onClick={() => navigate("/login")} color={"blue.400"}>
-                    Login
-                  </Link>
-                </Text>
-              </Stack> */}
             </Stack>
           </Box>
         </Stack>
